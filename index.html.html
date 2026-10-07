@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NIRF Score Simulator - Simulate, analyse and improve institutional NIRF performance." />
+  <title>NIRF Score Simulator | Institutional Performance Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --navy:#071a3d;
+      --navy2:#0d2c62;
+      --blue:#1f63ff;
+      --cyan:#18b7d8;
+      --gold:#f2b84b;
+      --text:#10213e;
+      --muted:#61708a;
+      --line:#dce5f1;
+      --soft:#f5f8fd;
+      --white:#fff;
+      --green:#0f9f72;
+      --shadow:0 18px 50px rgba(13,44,98,.12);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--text);background:#fff;line-height:1.6}
+    h1,h2,h3{font-family:Manrope,Inter,sans-serif;line-height:1.15;margin-top:0}
+    a{text-decoration:none;color:inherit}
+    .container{width:min(1180px,calc(100% - 40px));margin:auto}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+    .eyebrow:before{content:"";width:28px;height:2px;background:var(--gold)}
+    .section{padding:88px 0}
+    .section-head{max-width:760px;margin:0 auto 48px;text-align:center}
+    .section-head h2{font-size:clamp(30px,4vw,46px);margin-bottom:15px;color:var(--navy)}
+    .section-head p{font-size:17px;color:var(--muted);margin:0}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;border-radius:10px;font-weight:700;border:1px solid transparent;transition:.25s;cursor:pointer}
+    .btn-primary{background:linear-gradient(135deg,var(--blue),#174cc6);color:#fff;box-shadow:0 10px 25px rgba(31,99,255,.28)}
+    .btn-primary:hover{transform:translateY(-2px)}
+    .btn-outline{border-color:#b8c8de;color:var(--navy);background:#fff}
+    .btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+    nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid rgba(220,229,241,.8)}
+    .nav-inner{height:74px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;color:var(--navy)}
+    .brand-mark{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--navy2),var(--blue));display:grid;place-items:center;color:#fff;font-size:13px;box-shadow:0 8px 18px rgba(13,44,98,.22)}
+    .brand small{display:block;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+    .nav-links{display:flex;align-items:center;gap:28px;font-size:14px;font-weight:600}
+    .nav-links a:hover{color:var(--blue)}
+    .hero{position:relative;overflow:hidden;background:
+      radial-gradient(circle at 82% 15%,rgba(31,99,255,.13),transparent 28%),
+      radial-gradient(circle at 68% 70%,rgba(24,183,216,.10),transparent 25%),
+      linear-gradient(180deg,#f8fbff 0%,#fff 100%);padding:84px 0 76px}
+    .hero:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(13,44,98,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(13,44,98,.035) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent)}
+    .hero-grid{position:relative;display:grid;grid-template-columns:1.02fr .98fr;gap:60px;align-items:center}
+    .hero h1{font-size:clamp(42px,5.4vw,68px);letter-spacing:-.04em;color:var(--navy);margin-bottom:22px}
+    .hero h1 span{background:linear-gradient(90deg,var(--blue),var(--cyan));-webkit-background-clip:text;color:transparent}
+    .hero-copy{font-size:18px;color:var(--muted);max-width:650px;margin-bottom:28px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+    .trust-line{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:#50617c;font-weight:600}
+    .trust-line span:before{content:"✓";color:var(--green);font-weight:900;margin-right:7px}
+    .dashboard{background:#fff;border:1px solid #dbe5f3;border-radius:20px;box-shadow:0 28px 70px rgba(10,35,80,.18);overflow:hidden;transform:perspective(1200px) rotateY(-2deg)}
+    .dash-top{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    .dots{display:flex;gap:6px}.dots i{width:8px;height:8px;border-radius:50%;background:#cdd8e8}.dots i:first-child{background:var(--gold)}
+    .dash-body{padding:20px}
+    .score-row{display:grid;grid-template-columns:1fr 150px;gap:14px;margin-bottom:14px}
+    .score-main{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:14px;padding:22px}
+    .score-main small{opacity:.72}.big-score{font-size:46px;font-weight:800;line-height:1;margin:9px 0}.score-main b{color:#73e0c1;font-size:12px}
+    .score-ring{border:1px solid var(--line);border-radius:14px;display:grid;place-items:center;text-align:center;padding:12px}
+    .ring{width:84px;height:84px;border-radius:50%;background:conic-gradient(var(--blue) 0 76%,#e8eef7 76%);display:grid;place-items:center;position:relative}
+    .ring:after{content:"";width:62px;height:62px;border-radius:50%;background:#fff;position:absolute}.ring strong{position:relative;z-index:1;font-size:18px}
+    .mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .mini{border:1px solid var(--line);border-radius:12px;padding:14px}
+    .mini small{font-size:10px;color:var(--muted);font-weight:700}.mini strong{display:block;color:var(--navy);font-size:19px;margin:3px 0}.bar{height:5px;background:#e8eef7;border-radius:10px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:10px}
+    .flow-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}
+    .flow{display:grid;grid-template-columns:repeat(6,1fr);padding:22px 0}
+    .flow div{text-align:center;padding:0 10px;border-right:1px solid var(--line);font-size:12px;color:var(--muted);font-weight:600}
+    .flow div:last-child{border:0}.flow b{display:block;color:var(--navy);font-size:13px;margin-bottom:3px}.flow .num{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#eef4ff;color:var(--blue);margin-bottom:7px}
+    .features{background:var(--soft)}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;transition:.25s}
+    .card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:#c7d8f0}
+    .icon{width:48px;height:48px;border-radius:12px;background:#eef4ff;color:var(--blue);display:grid;place-items:center;font-size:22px;margin-bottom:20px}
+    .card h3{font-size:20px;color:var(--navy);margin-bottom:10px}.card p{color:var(--muted);font-size:14px;margin:0}
+    .simulator{background:linear-gradient(135deg,#061735,#0c2d64);color:#fff;overflow:hidden}
+    .sim-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px;align-items:center}
+    .simulator .eyebrow{color:#79dff1}.simulator h2{font-size:clamp(34px,4vw,50px);margin-bottom:18px}.simulator p{color:#b9c8dd}
+    .sim-points{margin:25px 0;display:grid;gap:12px}.sim-points span{font-size:14px;color:#e7eef8}.sim-points span:before{content:"↗";display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;background:rgba(115,224,193,.12);color:#73e0c1;margin-right:10px}
+    .sim-panel{background:#fff;color:var(--text);border-radius:18px;padding:26px;box-shadow:0 25px 70px rgba(0,0,0,.25)}
+    .sim-panel h3{color:var(--navy);display:flex;justify-content:space-between;font-size:18px}.live{font:700 10px Inter;color:var(--green);background:#e9f9f4;padding:6px 8px;border-radius:20px}
+    .control{padding:17px 0;border-bottom:1px solid var(--line)}.control:last-of-type{border:0}
+    .control-top{display:flex;justify-content:space-between;font-size:13px;font-weight:700}.control-top b{color:var(--blue)}
+    input[type=range]{width:100%;accent-color:var(--blue);margin:13px 0 3px}
+    .impact{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.impact div{background:var(--soft);border-radius:12px;padding:16px}.impact small{color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase}.impact strong{display:block;font-size:25px;color:var(--navy)}.impact .positive{color:var(--green)}
+    .stakeholders{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.stake{border:1px solid var(--line);border-radius:14px;padding:22px 16px;text-align:center}.stake strong{display:block;color:var(--navy);font-size:14px;margin-top:8px}.stake span{font-size:11px;color:var(--muted)}
+    .strategy{background:var(--soft)}.strategy-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}.step{padding:28px 22px;border-right:1px solid var(--line);position:relative}.step:last-child{border:0}.step em{font-style:normal;font-weight:800;color:var(--blue);font-size:11px}.step h3{font-size:17px;margin:9px 0;color:var(--navy)}.step p{font-size:12px;color:var(--muted);margin:0}
+    .cta{padding:80px 0}.cta-box{background:linear-gradient(135deg,var(--navy),#123f88);border-radius:24px;padding:58px;text-align:center;color:#fff;position:relative;overflow:hidden}.cta-box:after{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(31,99,255,.25);right:-100px;top:-150px}.cta-box h2{font-size:clamp(30px,4vw,46px);margin-bottom:14px;position:relative;z-index:1}.cta-box p{color:#c5d3e7;max-width:700px;margin:0 auto 25px;position:relative;z-index:1}.cta-box .btn{position:relative;z-index:1}
+    .disclaimer{background:#f7f9fc;border-top:1px solid var(--line);padding:30px 0;font-size:11px;color:#69778d}.disclaimer strong{color:var(--navy)}
+    footer{background:#04132f;color:#9fb0c9;padding:34px 0}.footer-inner{display:flex;justify-content:space-between;gap:20px;align-items:center;font-size:12px}.footer-brand{color:#fff;font-weight:800}
+    @media(max-width:900px){
+      .nav-links a:not(.btn){display:none}.hero-grid,.sim-grid{grid-template-columns:1fr}.dashboard{transform:none}.cards{grid-template-columns:1fr 1fr}.stakeholders{grid-template-columns:repeat(2,1fr)}.strategy-grid{grid-template-columns:1fr 1fr}.step{border-bottom:1px solid var(--line)}.flow{grid-template-columns:repeat(3,1fr);gap:18px}.flow div{border:0}.hero{padding-top:55px}
+    }
+    @media(max-width:600px){
+      .container{width:min(100% - 28px,1180px)}.section{padding:64px 0}.cards{grid-template-columns:1fr}.score-row{grid-template-columns:1fr}.mini-grid{grid-template-columns:1fr 1fr}.stakeholders,.strategy-grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.cta-box{padding:42px 22px}.footer-inner{flex-direction:column;text-align:center}.brand small{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a class="brand" href="#">
+      <span class="brand-mark">NS</span>
+      <span>NIRF Score Simulator<small>Institutional Performance Intelligence</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#simulator">What-If Simulator</a>
+      <a href="#workflow">How It Works</a>
+      <a href="#demo" class="btn btn-primary">Request Demo</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">NIRF Performance Intelligence</span>
+      <h1>Know Your Score.<br><span>Plan Your Improvement.</span></h1>
+      <p class="hero-copy">Transform institutional data into predicted NIRF scores, identify performance gaps, and simulate improvement scenarios—all from one intelligent decision-support platform.</p>
+      <div class="hero-actions">
+        <a href="#demo" class="btn btn-primary">Start NIRF Simulation →</a>
+        <a href="#simulator" class="btn btn-outline">Explore What-If Simulator</a>
+      </div>
+      <div class="trust-line">
+        <span>Automatic calculations</span>
+        <span>Scenario simulation</span>
+        <span>PDF reporting</span>
+      </div>
+    </div>
+
+    <div class="dashboard" aria-label="Illustrative NIRF simulator dashboard">
+      <div class="dash-top">
+        <strong style="font-size:13px;color:#071a3d">Institution Performance Overview</strong>
+        <div class="dots"><i></i><i></i><i></i></div>
+      </div>
+      <div class="dash-body">
+        <div class="score-row">
+          <div class="score-main">
+            <small>Predicted NIRF Score</small>
+            <div class="big-score" id="heroScore">62.84</div>
+            <b>▲ +3.26 improvement potential</b>
+          </div>
+          <div class="score-ring">
+            <div class="ring"><strong>76%</strong></div>
+            <small style="font-size:10px;color:#61708a;margin-top:7px">Data Readiness</small>
+          </div>
+        </div>
+        <div class="mini-grid">
+          <div class="mini"><small>TLR</small><strong>71.4</strong><div class="bar"><i style="width:71%"></i></div></div>
+          <div class="mini"><small>RP</small><strong>48.7</strong><div class="bar"><i style="width:49%"></i></div></div>
+          <div class="mini"><small>GO</small><strong>66.2</strong><div class="bar"><i style="width:66%"></i></div></div>
+          <div class="mini"><small>OI</small><strong>58.9</strong><div class="bar"><i style="width:59%"></i></div></div>
+          <div class="mini"><small>PR</small><strong>42.5</strong><div class="bar"><i style="width:43%"></i></div></div>
+          <div class="mini"><small>Review</small><strong style="color:#0f9f72">Ready</strong><div class="bar"><i style="width:88%"></i></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="flow-strip" id="workflow">
+  <div class="container flow">
+    <div><span class="num">1</span><b>Data Entry</b>Structured inputs</div>
+    <div><span class="num">2</span><b>Faculty Upload</b>Consolidate records</div>
+    <div><span class="num">3</span><b>Auto Calculate</b>Sub-parameters</div>
+    <div><span class="num">4</span><b>Predict Score</b>Estimate performance</div>
+    <div><span class="num">5</span><b>Review</b>Validate inputs</div>
+    <div><span class="num">6</span><b>Download</b>Final PDF report</div>
+  </div>
+</section>
+
+<section class="section features" id="features">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">One Integrated Platform</span>
+      <h2>From Data Entry to NIRF Decision Intelligence</h2>
+      <p>Simplify complex NIRF preparation and give institutional leadership a clearer view of performance, gaps and improvement opportunities.</p>
+    </div>
+    <div class="cards">
+      <article class="card"><div class="icon">▤</div><h3>Structured Data Entry</h3><p>Capture institutional data through a structured, parameter-aligned interface and reduce dependency on disconnected spreadsheets.</p></article>
+      <article class="card"><div class="icon">⇧</div><h3>Faculty Data Upload</h3><p>Upload and consolidate faculty information for applicable faculty strength, qualification, experience and ratio calculations.</p></article>
+      <article class="card"><div class="icon">∑</div><h3>Automatic Calculations</h3><p>Automatically process entered data to generate applicable NIRF parameter and sub-parameter calculations.</p></article>
+      <article class="card"><div class="icon">◎</div><h3>Score Prediction</h3><p>Generate tentative NIRF scores and quickly understand the contribution of major parameters to overall simulated performance.</p></article>
+      <article class="card"><div class="icon">✓</div><h3>Review & Submit</h3><p>Review institutional inputs, faculty information, calculations and predicted scores through a consolidated verification view.</p></article>
+      <article class="card"><div class="icon">PDF</div><h3>Final PDF Report</h3><p>Download consolidated simulation data for management review, IQAC discussions, gap analysis and submission preparedness.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section simulator" id="simulator">
+  <div class="container sim-grid">
+    <div>
+      <span class="eyebrow">Scenario Impact Simulator</span>
+      <h2>What If You Could Test an Improvement Before Implementing It?</h2>
+      <p>Adjust key institutional variables and instantly visualize their potential effect on the simulated score. Turn NIRF preparation into a measurable planning exercise.</p>
+      <div class="sim-points">
+        <span>Test sanctioned intake and enrolment scenarios</span>
+        <span>Evaluate changes in faculty strength</span>
+        <span>Model improvement in PhD-qualified faculty</span>
+        <span>Compare current and proposed institutional scenarios</span>
+      </div>
+      <a href="#demo" class="btn btn-primary">Experience the Simulator →</a>
+    </div>
+
+    <div class="sim-panel">
+      <h3>What-If Score Simulator <span class="live">● LIVE SIMULATION</span></h3>
+      <div class="control">
+        <div class="control-top"><span>Faculty Strength</span><b><span id="facultyVal">185</span> → <span id="facultyNew">210</span></b></div>
+        <input id="faculty" type="range" min="185" max="240" value="210">
+      </div>
+      <div class="control">
+        <div class="control-top"><span>PhD-Qualified Faculty</span><b>62% → <span id="phdVal">75</span>%</b></div>
+        <input id="phd" type="range" min="62" max="90" value="75">
+      </div>
+      <div class="control">
+        <div class="control-top"><span>Student Enrolment</span><b>82% → <span id="enrolVal">90</span>%</b></div>
+        <input id="enrol" type="range" min="82" max="100" value="90">
+      </div>
+      <div class="impact">
+        <div><small>Current Score</small><strong>62.84</strong></div>
+        <div><small>Illustrative Score Impact</small><strong class="positive" id="impactScore">+3.26</strong></div>
+      </div>
+      <p style="font-size:9px;color:#8290a5;margin:12px 0 0">Illustrative interface only. Displayed score changes are examples and do not represent official NIRF calculations.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Designed for Higher Education</span>
+      <h2>One Platform. Multiple Decision-Makers.</h2>
+      <p>Give every stakeholder the visibility they need—from strategic management decisions to operational NIRF data preparation.</p>
+    </div>
+    <div class="stakeholders">
+      <div class="stake"><div class="icon" style="margin:0 auto">♛</div><strong>Vice Chancellors</strong><span>Strategic performance view</span></div>
+      <div class="stake"><div class="icon" style="margin:0 auto">◆</div><strong>Directors & Principals</strong><span>Priority interventions</span></div>
+      <div class="stake"><div class="icon" style="margin:0 auto">✓</div><strong>IQAC Teams</strong><span>Quality & gap review</span></div>
+      <div class="stake"><div class="icon" style="margin:0 auto">▤</div><strong>NIRF Coordinators</strong><span>Data & score workflow</span></div>
+      <div class="stake"><div class="icon" style="margin:0 auto">◎</div><strong>Department Heads</strong><span>Contribution visibility</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section strategy">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Make Improvement Measurable</span>
+      <h2>From NIRF Reporting to NIRF Strategy</h2>
+      <p>Move beyond annual data collection and build a continuous, evidence-driven institutional improvement process.</p>
+    </div>
+    <div class="strategy-grid">
+      <div class="step"><em>01</em><h3>Current Data</h3><p>Understand the institution's present simulated performance.</p></div>
+      <div class="step"><em>02</em><h3>Gap Visibility</h3><p>Identify parameters and sub-parameters with improvement potential.</p></div>
+      <div class="step"><em>03</em><h3>Scenario Testing</h3><p>Model alternative institutional data scenarios.</p></div>
+      <div class="step"><em>04</em><h3>Score Impact</h3><p>Observe estimated increases or decreases in performance.</p></div>
+      <div class="step"><em>05</em><h3>Action Planning</h3><p>Prioritize interventions using simulation insights.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="demo">
+  <div class="container">
+    <div class="cta-box">
+      <span class="eyebrow" style="color:#8ce4f4">Ready to Explore Your NIRF Potential?</span>
+      <h2>Don't Just Submit Data.<br>Understand What the Data Means.</h2>
+      <p>Discover how institutional data and improvement scenarios could influence your predicted NIRF performance.</p>
+      <a href="#" class="btn btn-primary">Request a Live Demo →</a>
+      <a href="#" class="btn btn-outline" style="margin-left:8px;background:transparent;color:#fff;border-color:#6680a9">Start Simulation</a>
+    </div>
+  </div>
+</section>
+
+<section class="disclaimer">
+  <div class="container">
+    <strong>Important Disclaimer:</strong> The NIRF Score Simulator is a simulation and decision-support tool intended to generate tentative/estimated scores based on the data entered and the methodology configured within the platform. Simulated or predicted scores do not represent, guarantee, or replace official NIRF scores or rankings. Actual results may vary based on final data submitted, data validation and acceptance by NIRF/MoE, official methodology, external data sources, perception inputs, normalization or evaluation processes, and methodology changes. Institutions should refer to the applicable official NIRF guidelines for final submission and compliance.
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <div><span class="footer-brand">NIRF Score Simulator</span><br>Institutional Performance Intelligence</div>
+    <div>Simulate • Analyse • Improve • Prepare</div>
+    <div>© 2026. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+  const faculty = document.getElementById('faculty');
+  const phd = document.getElementById('phd');
+  const enrol = document.getElementById('enrol');
+  const facultyNew = document.getElementById('facultyNew');
+  const phdVal = document.getElementById('phdVal');
+  const enrolVal = document.getElementById('enrolVal');
+  const impactScore = document.getElementById('impactScore');
+
+  function updateSimulation(){
+    facultyNew.textContent = faculty.value;
+    phdVal.textContent = phd.value;
+    enrolVal.textContent = enrol.value;
+
+    // Illustrative UI effect only — not an official NIRF formula.
+    const f = (faculty.value - 185) * 0.035;
+    const p = (phd.value - 62) * 0.11;
+    const e = (enrol.value - 82) * 0.075;
+    const impact = Math.max(0, f + p + e);
+    impactScore.textContent = '+' + impact.toFixed(2);
+  }
+
+  [faculty, phd, enrol].forEach(el => el.addEventListener('input', updateSimulation));
+  updateSimulation();
+</script>
+</body>
+</html>
